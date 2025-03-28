@@ -43,4 +43,21 @@ depth_strata <- st_read("C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Amep
 depth_contour <- st_read("C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Ameplisca-Size-Class-Distribution/Data/Shapefiles_False_Bay/World Depth Contours - hires - 2019/gebco_2019_contours.shp")
 ```
 
+The `deWetBathymetrySA.shp` file provided in the dropbox link is corrupted/does not contain all the components, so I need to rebuild it. 
+
+> NOTE: In order for shapefiles to work correctly, they must contain a `.shp`, `.shx` and `.dbf` component. The file in my dropbox is only the `.shp` component.  
+
+```{r}
+# Tell GDAL to attempt to restore the .shx file before using the bathymetry shapefile. 
+sf::gdal_utils("info", 
+               "C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Ameplisca-Size-Class-Distribution/Data/Shapefiles_False_Bay/deWetBathymetrySA.shp", 
+               config_options = c("SHAPE_RESTORE_SHX" = "YES"))
+
+# Define a new output path for the file
+bathy_path <- "C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Ameplisca-Size-Class-Distribution/Data/Shapefiles_False_Bay/deWetBathymetrySA.shp"
+
+# Read the restored .shx
+bathymetry <- st_read(bathy_path)
+
+```
 
