@@ -58,6 +58,5 @@ bathy_path <- "C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Ameplisca-Size
 
 # Read the restored .shx
 bathymetry <- st_read(bathy_path)
-
 ```
 

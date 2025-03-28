@@ -371,6 +371,92 @@ in False Bay: Size Class Distribution of Ampelisca spp.</h1>
 <p>The shapefiles I am using to create this map can be downloaded as one
 .zip file <a href="https://www.dropbox.com/scl/fi/9fz9bgilr2pp98uoyxthl/Shapefiles_False_Bay.zip?rlkey=msl4u8sleeho5x8ftxyttsp5w&amp;st=rdzdgjw2&amp;dl=0">here</a>.
 Note that the .zip file is very large (793.29 MB).</p>
+<p>I will now read the data from a data file on my personal computer
+using the <code>st_read()</code> function.</p>
+<blockquote>
+<p>NOTE: When you are writing/reading this code from your personal
+computer, you will need to edit the file path to reflect where you have
+stored your own data. You will need to do this each time I read in data
+or save data to a file on my personal computer. The <code>setwd()</code>
+function can help you to do this. Alternatively, you can use the
+<code>getwd()</code> function to see what your current working directory
+is and manually edit the code based on that.</p>
+</blockquote>
+<pre class="r"><code># South African province shapefile
+province &lt;- st_read(&quot;C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Ameplisca-Size-Class-Distribution/Data/Shapefiles_False_Bay/SA Provinces/provincial.shp&quot;) </code></pre>
+<pre><code>## Reading layer `provincial&#39; from data source 
+##   `C:\Users\Dell\OneDrive\Desktop\UCT\Honours Project\Ameplisca-Size-Class-Distribution\Data\Shapefiles_False_Bay\SA Provinces\provincial.shp&#39; 
+##   using driver `ESRI Shapefile&#39;
+## Simple feature collection with 10 features and 2 fields
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: 16.45579 ymin: -34.83291 xmax: 32.89143 ymax: -22.12513
+## CRS:           NA</code></pre>
+<pre class="r"><code># Coastline shapefile
+coast &lt;- st_read(&quot;C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Ameplisca-Size-Class-Distribution/Data/Shapefiles_False_Bay/SA Coastline/SA Coastline.shp&quot;) </code></pre>
+<pre><code>## Reading layer `SA Coastline&#39; from data source 
+##   `C:\Users\Dell\OneDrive\Desktop\UCT\Honours Project\Ameplisca-Size-Class-Distribution\Data\Shapefiles_False_Bay\SA Coastline\SA Coastline.shp&#39; 
+##   using driver `ESRI Shapefile&#39;
+## Simple feature collection with 1 feature and 1 field
+## Geometry type: MULTIPOLYGON
+## Dimension:     XY
+## Bounding box:  xmin: 16.45191 ymin: -34.83417 xmax: 32.94498 ymax: -22.12503
+## Geodetic CRS:  WGS 84</code></pre>
+<pre class="r"><code># Depth strata shapefile
+depth_strata &lt;- st_read(&quot;C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Ameplisca-Size-Class-Distribution/Data/Shapefiles_False_Bay/SA Depth Strata - NSBA/depth_strata.shp&quot;) </code></pre>
+<pre><code>## Reading layer `depth_strata&#39; from data source 
+##   `C:\Users\Dell\OneDrive\Desktop\UCT\Honours Project\Ameplisca-Size-Class-Distribution\Data\Shapefiles_False_Bay\SA Depth Strata - NSBA\depth_strata.shp&#39; 
+##   using driver `ESRI Shapefile&#39;
+## Simple feature collection with 19 features and 5 fields
+## Geometry type: POLYGON
+## Dimension:     XY
+## Bounding box:  xmin: 13.34821 ymin: -38.17222 xmax: 36.57348 ymax: -26.85805
+## CRS:           NA</code></pre>
+<pre class="r"><code># World Depth Contour shapefile
+depth_contour &lt;- st_read(&quot;C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Ameplisca-Size-Class-Distribution/Data/Shapefiles_False_Bay/World Depth Contours - hires - 2019/gebco_2019_contours.shp&quot;)</code></pre>
+<pre><code>## Reading layer `gebco_2019_contours&#39; from data source 
+##   `C:\Users\Dell\OneDrive\Desktop\UCT\Honours Project\Ameplisca-Size-Class-Distribution\Data\Shapefiles_False_Bay\World Depth Contours - hires - 2019\gebco_2019_contours.shp&#39; 
+##   using driver `ESRI Shapefile&#39;
+## Simple feature collection with 1357601 features and 1 field
+## Geometry type: LINESTRING
+## Dimension:     XY
+## Bounding box:  xmin: -180 ymin: -78.65882 xmax: 180 ymax: 89.58328
+## Geodetic CRS:  WGS 84</code></pre>
+<p>The <code>deWetBathymetrySA.shp</code> file provided in the dropbox
+link is corrupted/does not contain all the components, so I need to
+rebuild it.</p>
+<blockquote>
+<p>NOTE: In order for shapefiles to work correctly, they must contain a
+<code>.shp</code>, <code>.shx</code> and <code>.dbf</code> component.
+The file in my dropbox is only the <code>.shp</code> component.</p>
+</blockquote>
+<pre class="r"><code># Tell GDAL to attempt to restore the .shx file before using the bathymetry shapefile. 
+sf::gdal_utils(&quot;info&quot;, 
+               &quot;C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Ameplisca-Size-Class-Distribution/Data/Shapefiles_False_Bay/deWetBathymetrySA.shp&quot;, 
+               config_options = c(&quot;SHAPE_RESTORE_SHX&quot; = &quot;YES&quot;))</code></pre>
+<pre><code>## Driver: ESRI Shapefile/ESRI Shapefile
+## Files: C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Ameplisca-Size-Class-Distribution/Data/Shapefiles_False_Bay/deWetBathymetrySA.shp
+##        C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Ameplisca-Size-Class-Distribution/Data/Shapefiles_False_Bay/deWetBathymetrySA.shx
+## Size is 512, 512
+## Corner Coordinates:
+## Upper Left  (    0.0,    0.0)
+## Lower Left  (    0.0,  512.0)
+## Upper Right (  512.0,    0.0)
+## Lower Right (  512.0,  512.0)
+## Center      (  256.0,  256.0)</code></pre>
+<pre class="r"><code># Define a new output path for the file
+bathy_path &lt;- &quot;C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Ameplisca-Size-Class-Distribution/Data/Shapefiles_False_Bay/deWetBathymetrySA.shp&quot;
+
+# Read the restored .shx
+bathymetry &lt;- st_read(bathy_path)</code></pre>
+<pre><code>## Reading layer `deWetBathymetrySA&#39; from data source 
+##   `C:\Users\Dell\OneDrive\Desktop\UCT\Honours Project\Ameplisca-Size-Class-Distribution\Data\Shapefiles_False_Bay\deWetBathymetrySA.shp&#39; 
+##   using driver `ESRI Shapefile&#39;
+## Simple feature collection with 457 features and 0 fields
+## Geometry type: MULTILINESTRING
+## Dimension:     XY
+## Bounding box:  xmin: 12.72152 ymin: -37.34919 xmax: 35.99689 ymax: -24.0014
+## CRS:           NA</code></pre>
 </div>
 </div>
 
