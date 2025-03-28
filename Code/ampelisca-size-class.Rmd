@@ -1,0 +1,35 @@
+---
+title: "Amphipod Tube Beds as Ecological Phenomena in False Bay: Size Class 
+Distribution of Ampelisca spp."
+author: "Muhammad Uzair Davids"
+date: "2025-03-28"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## **1. Mapping the Sampling Stations**
+### **1.1. Loading in packages**
+
+I start by loading in the packages I will use to create my map.
+
+```{r}
+library(sf) # This package will allow us to read shapefiles.
+```
+
+### **1.2. Reading in the data**
+
+The shapefiles I am using to create this map can be downloaded as one .zip file 
+[here](https://www.dropbox.com/scl/fi/9fz9bgilr2pp98uoyxthl/Shapefiles_False_Bay.zip?rlkey=msl4u8sleeho5x8ftxyttsp5w&st=rdzdgjw2&dl=0). Note that the .zip file is very large (793.29 MB).
+
+I will now read the data from a data file on my personal computer using the `st_read()` function.
+
+> NOTE: When you are writing/reading this code from your personal computer, you will need to edit the file path to reflect where you have stored your own data. The `setwd()` function can help you to do this. Alternatively, you can use the `getwd()` function to see what your current working directory is and manually edit the code based on that.
+
+```{r}
+coast <- st_read("C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Ameplisca-Size-Class-Distribution/Data/Shapefiles_False_Bay/SA Coastline/SA Coastline.shp") # Coastline shapefile
+```
+
+
