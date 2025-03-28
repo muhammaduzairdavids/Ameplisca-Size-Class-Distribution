@@ -3,6 +3,7 @@ title: "Amphipod Tube Beds as Ecological Phenomena in False Bay: Size Class
 Distribution of Ampelisca spp."
 author: "Muhammad Uzair Davids"
 date: "2025-03-28"
+version: "R version 4.4.3 (2025-02-28 ucrt) -- 'Trophy Case'"
 output: html_document
 ---
 
@@ -26,10 +27,20 @@ The shapefiles I am using to create this map can be downloaded as one .zip file
 
 I will now read the data from a data file on my personal computer using the `st_read()` function.
 
-> NOTE: When you are writing/reading this code from your personal computer, you will need to edit the file path to reflect where you have stored your own data. The `setwd()` function can help you to do this. Alternatively, you can use the `getwd()` function to see what your current working directory is and manually edit the code based on that.
+> NOTE: When you are writing/reading this code from your personal computer, you will need to edit the file path to reflect where you have stored your own data. You will need to do this each time I read in data or save data to a file on my personal computer. The `setwd()` function can help you to do this. Alternatively, you can use the `getwd()` function to see what your current working directory is and manually edit the code based on that.
 
 ```{r}
-coast <- st_read("C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Ameplisca-Size-Class-Distribution/Data/Shapefiles_False_Bay/SA Coastline/SA Coastline.shp") # Coastline shapefile
+# South African province shapefile
+province <- st_read("C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Ameplisca-Size-Class-Distribution/Data/Shapefiles_False_Bay/SA Provinces/provincial.shp") 
+
+# Coastline shapefile
+coast <- st_read("C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Ameplisca-Size-Class-Distribution/Data/Shapefiles_False_Bay/SA Coastline/SA Coastline.shp") 
+
+# Depth strata shapefile
+depth_strata <- st_read("C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Ameplisca-Size-Class-Distribution/Data/Shapefiles_False_Bay/SA Depth Strata - NSBA/depth_strata.shp") 
+
+# World Depth Contour shapefile
+depth_contour <- st_read("C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Ameplisca-Size-Class-Distribution/Data/Shapefiles_False_Bay/World Depth Contours - hires - 2019/gebco_2019_contours.shp")
 ```
 
 
