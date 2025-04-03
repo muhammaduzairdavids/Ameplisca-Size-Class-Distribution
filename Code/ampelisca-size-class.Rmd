@@ -18,6 +18,7 @@ I start by loading in the packages I will use to create my map.
 
 ```{r}
 library(sf) # This package will allow us to read shapefiles.
+library(raster) # This package will allow us to read raster files.
 ```
 
 ### **1.2. Reading in the data**
@@ -58,5 +59,8 @@ bathy_path <- "C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Ameplisca-Size
 
 # Read the restored .shx
 bathymetry <- st_read(bathy_path)
+```
+```{r}
+bathymetry <- raster("C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Ameplisca-Size-Class-Distribution/Data/Willem de Wet Bathymetry of Southern Africa Continental Shelf.grd")
 ```
 
