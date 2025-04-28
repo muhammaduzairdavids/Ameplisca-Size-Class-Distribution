@@ -7,21 +7,180 @@ editor: visual
 
 ## Setting Up the Analysis Environment
 
-```{r}
+```{r, echo = FALSE}
+# Packages for data wrangling
+library(tidyverse)
+library(dplyr)
 
+# Packages for creating plots
+library(ggplot2)
+library(gridExtra) # To arrange plots
+library(patchwork) # To arrange plots
 ```
 
-## Running Code
+## Reading the Data
 
 ```{r}
-1 + 1
+# Read the data from the directory
+ampelisca <- read.csv("C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Ameplisca-Size-Class-Distribution/Data/data_size.csv")
+
+# Let's have a look at the data
+summary(ampelisca)
 ```
 
-You can add options to executable code like this
+## Tidying Up
+
+These column names are a bit of a mess, so let's neaten them up a bit using the `dplyr` package.
 
 ```{r}
-#| echo: false
-2 * 2
+# Rename columns
+ampelisca <- ampelisca %>%
+  rename(
+    site = Site, # This is just for the sake of consistency
+    season = Season, # Same here
+    size_adult = Size..mm., # The size of adults in mm
+    egg_presence = Eggs..Y.N., # Whether or not adults are carrying eggs (Y/N)
+    egg_count = Number.of.Eggs, # Number of eggs the adult is carrying
+    juv_presence = Juveniles..Y.N., # Whether or not adults are carrying juveniles (Y/N)
+    juv_count = Number.of.Juveniles, # Number of juveniles the adult is carrying
+    size_juv = Size.of.Juveniles..mm. # The size of the juveniles being carried in mm
+  )
 ```
 
-The `echo: false` option disables the printing of code (only output is displayed).
+## Sorting the Data
+
+Next, I need to separate the data into groups based on their site and season.
+
+```{r}
+# Split the data into separate data frames based on season
+summer_data <- ampelisca %>% filter(site == "FB005A", season == "Summer")
+winter_data <- ampelisca %>% filter(site == "FB005A", season == "Winter")
+autumn_data <- ampelisca %>% filter(site == "FB005A", season == "Autumn")
+spring_data <- ampelisca %>% filter(site == "FB005A", season == "Spring")
+```
+
+We can check to see if it worked by printing the results. If it worked correctly, there should be 100 rows in the new data frames.
+
+```{r}
+print(summer_data)
+```
+
+Hooray! It worked. Let's do some basic summaries of the data now.
+
+## Counts
+
+The data set contains information regarding how adult *Ampelisca* were carrying eggs and juveniles, as well as how many eggs and juveniles these adults were carrying. We count these using `dplyr`.
+
+Let's start with counting how many adults were carrying eggs in each season.
+
+```{r}
+# Winter data
+eggs_pres_win <- winter_data %>%
+  group_by(egg_presence) %>%
+  summarise(count = n())
+
+# Spring data
+eggs_pres_spr <- spring_data %>%
+  group_by(egg_presence) %>%
+  summarise(count = n())
+
+# Summer data
+eggs_pres_sum <- summer_data %>%
+  group_by(egg_presence) %>%
+  summarise(count = n())
+
+# Autumn data
+eggs_pres_aut <- autumn_data %>%
+  group_by(egg_presence) %>%
+  summarise(count = n())
+
+# Print the summaries
+print(eggs_pres_win)
+```
+
+> Note: The number of adults carrying eggs is recorded in the `Y` row here. Also, the total number of individuals in the `N` and `Y` column should sum to 100.
+
+But how many eggs are present in total?
+
+```{r}
+# Summarize: sum of egg_count per season
+eggs_per_season <- ampelisca %>%
+  group_by(season) %>%
+  summarise(total_eggs = sum(egg_count, na.rm = TRUE))  # na.rm = TRUE ignores missing values
+
+# Reorder the 'season' factor levels tp match the order they were sampled in
+eggs_per_season$season <- factor(eggs_per_season$season, 
+                                 levels = c("Winter", "Spring", "Summer", "Autumn"))
+
+# View the result
+print(eggs_per_season)
+```
+
+Let's plot the number of eggs per season using `ggplot2`.
+
+```{r}
+# Plot of the number of eggs per season
+ggplot(eggs_per_season, aes(x = season, y = total_eggs, fill = season)) +
+  geom_col() +
+  labs(title = "Total Number of Eggs per Season", x = "Season", y = "Total Eggs") +
+  theme_minimal() +
+  scale_fill_brewer(palette = "Set3")
+```
+
+Now let's check how many adults were carrying juveniles in each season - but tomorrow, I'm tired now.
+
+```{r}
+# Summarize counts for juv_presence
+juvenile_presence <- ampelisca %>%
+  group_by(juv_presence) %>%
+  summarise(count = n())
+
+print(juvenile_presence)
+```
+
+## Plotting Histograms
+
+I want to create histograms of the size classes in each season.
+
+```{r}
+# Create histograms
+p_winter <- ggplot(winter_data, aes(x = size_adult)) +
+  geom_histogram(binwidth = 1, fill = "lightblue", color = "black") +
+  ylab("Count") +
+  xlab("Size (mm)") +
+  ggtitle("Winter") +
+  theme_minimal()
+
+p_spring <- ggplot(spring_data, aes(x = size_adult)) +
+  geom_histogram(binwidth = 1, fill = "green", color = "black") +
+  ylab("Count") +
+  xlab("Size (mm)") +
+  ggtitle("Spring") +
+  theme_minimal()
+
+p_summer <- ggplot(summer_data, aes(x = size_adult)) +
+  geom_histogram(binwidth = 1, fill = "orange", color = "black") +
+  ylab("Count") +
+  xlab("Size (mm)") +
+  ggtitle("Summer") +
+  theme_minimal()
+
+p_autumn <- ggplot(autumn_data, aes(x = size_adult)) +
+  geom_histogram(binwidth = 1, fill = "brown", color = "black") +
+  ylab("Count") +
+  xlab("Size (mm)") +
+  ggtitle("Autumn") +
+  theme_minimal()
+
+# Combine all four plots into one plotting area using gridExtra
+grid.arrange(p_winter, p_spring, p_summer, p_autumn, ncol = 2)
+```
+
+I want to get a feel for different styles, so let's create the same plots using the `patchwork` package.
+
+```{r}
+# Combine the plots using patchwork
+(p_winter | p_spring) / (p_summer | p_autumn)
+```
+
+They both look the same to me, but anyway.
