@@ -1,0 +1,27 @@
+---
+title: "Size Class Distribution"
+author: "Muhammad Uzair Davids"
+format: html
+editor: visual
+---
+
+## Setting Up the Analysis Environment
+
+```{r}
+
+```
+
+## Running Code
+
+```{r}
+1 + 1
+```
+
+You can add options to executable code like this
+
+```{r}
+#| echo: false
+2 * 2
+```
+
+The `echo: false` option disables the printing of code (only output is displayed).

@@ -62,5 +62,6 @@ bathymetry <- st_read(bathy_path)
 ```
 ```{r}
 bathymetry <- raster("C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Ameplisca-Size-Class-Distribution/Data/Willem de Wet Bathymetry of Southern Africa Continental Shelf.grd")
+plot(bathymetry)
 ```
 
