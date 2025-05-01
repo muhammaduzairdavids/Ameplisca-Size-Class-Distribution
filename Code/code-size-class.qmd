@@ -5,7 +5,7 @@ format: html
 editor: visual
 ---
 
-## Setting Up the Analysis Environment
+## 1. Setting Up the Analysis Environment
 
 ```{r, echo = FALSE}
 # Packages for data wrangling
@@ -18,7 +18,7 @@ library(gridExtra) # To arrange plots
 library(patchwork) # To arrange plots
 ```
 
-## Reading the Data
+## 2. Reading the Data
 
 ```{r}
 # Read the data from the directory
@@ -28,7 +28,7 @@ ampelisca <- read.csv("C:/Users/Dell/OneDrive/Desktop/UCT/Honours Project/Amepli
 summary(ampelisca)
 ```
 
-## Tidying Up
+## 3. Tidying Up
 
 These column names are a bit of a mess, so let's neaten them up a bit using the `dplyr` package.
 
@@ -47,7 +47,7 @@ ampelisca <- ampelisca %>%
   )
 ```
 
-## Sorting the Data
+## 4. Sorting the Data
 
 Next, I need to separate the data into groups based on their site and season.
 
@@ -67,7 +67,7 @@ print(summer_data)
 
 Hooray! It worked. Let's do some basic summaries of the data now.
 
-## Counts
+## 5. Counts
 
 The data set contains information regarding how adult *Ampelisca* were carrying eggs and juveniles, as well as how many eggs and juveniles these adults were carrying. We count these using `dplyr`.
 
@@ -138,7 +138,7 @@ juvenile_presence <- ampelisca %>%
 print(juvenile_presence)
 ```
 
-## Plotting Histograms
+## 6. Plotting Histograms
 
 I want to create histograms of the size classes in each season.
 
@@ -184,3 +184,24 @@ I want to get a feel for different styles, so let's create the same plots using 
 ```
 
 They both look the same to me, but anyway.
+
+## 7. Kolmogorov-Smirnov Test
+
+Let's play around with the `ks.test()` function.
+
+> Note: This is not the way I would actually conduct the test for my final, at this point I am just getting a feel for the function.
+
+A test for normality.
+
+```{r}
+# Example: K-S test for normality of 'size' column
+ks.test(ampelisca$size_adult, "pnorm", mean = mean(ampelisca$size_adult), sd = sd(ampelisca$size_adult))
+
+```
+
+Comparing size between summer and winter.
+
+```{r}
+# Two-sample K-S test
+ks.test(summer_data$size_adult, winter_data$size_adult)
+```
