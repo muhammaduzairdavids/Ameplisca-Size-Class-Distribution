@@ -140,50 +140,96 @@ print(juvenile_presence)
 
 ## 6. Plotting Histograms
 
-I want to create histograms of the size classes in each season.
+Let's plot some histograms of the size classes of adults across seasons. But first, I need to know the minimum and maximum sizes of adults so we can set a consistent scale.
 
 ```{r}
-# Create histograms
+range(ampelisca$size_adult, na.rm = TRUE)
+```
+
+So, the smallest amphipod in our dataset is 2.102mm,, and the largest amphipod is 13.345mm. We can use this range to define the upper and lower limits of our histograms.
+
+```{r}
+limits <- c(2.102, 13.345)
+```
+
+Now to actually plot the histograms.
+
+```{r}
+# Winter
 p_winter <- ggplot(winter_data, aes(x = size_adult)) +
   geom_histogram(binwidth = 1, fill = "lightblue", color = "black") +
   ylab("Count") +
-  xlab("Size (mm)") +
+  xlab("Size") +
+  scale_x_continuous(labels = function(x) paste0(x, " mm"), limits = common_limits) +
   ggtitle("Winter") +
   theme_minimal()
 
+# Spring
 p_spring <- ggplot(spring_data, aes(x = size_adult)) +
   geom_histogram(binwidth = 1, fill = "green", color = "black") +
   ylab("Count") +
-  xlab("Size (mm)") +
+  xlab("Size") +
+  scale_x_continuous(labels = function(x) paste0(x, " mm"), limits = common_limits) +
   ggtitle("Spring") +
   theme_minimal()
 
+# Summer
 p_summer <- ggplot(summer_data, aes(x = size_adult)) +
   geom_histogram(binwidth = 1, fill = "orange", color = "black") +
   ylab("Count") +
-  xlab("Size (mm)") +
+  xlab("Size") +
+  scale_x_continuous(labels = function(x) paste0(x, " mm"), limits = common_limits) +
   ggtitle("Summer") +
   theme_minimal()
 
+# Autumn
 p_autumn <- ggplot(autumn_data, aes(x = size_adult)) +
   geom_histogram(binwidth = 1, fill = "brown", color = "black") +
   ylab("Count") +
-  xlab("Size (mm)") +
+  xlab("Size") +
+  scale_x_continuous(labels = function(x) paste0(x, " mm"), limits = common_limits) +
   ggtitle("Autumn") +
   theme_minimal()
 
-# Combine all four plots into one plotting area using gridExtra
+# Combine
 grid.arrange(p_winter, p_spring, p_summer, p_autumn, ncol = 2)
 ```
 
-I want to get a feel for different styles, so let's create the same plots using the `patchwork` package.
+Great, but I want publication ready plots, so no colours or grids.
 
 ```{r}
-# Combine the plots using patchwork
-(p_winter | p_spring) / (p_summer | p_autumn)
+clean_theme <- theme_minimal(base_size = 12) +
+  theme(
+    plot.title = element_text(hjust = 0.5, face = "bold"),
+    axis.title = element_text(face = "bold"),
+    panel.grid.major = element_blank(),   # remove major grid lines
+    panel.grid.minor = element_blank(),   # remove minor grid lines
+    panel.border = element_blank(),       # remove borders
+    axis.line = element_line(color = "black")  # keep axis lines for clarity
+  )
+
+
+make_hist <- function(ampelisca, title) {
+  ggplot(ampelisca, aes(x = size_adult)) +
+    geom_histogram(binwidth = 1, fill = "grey70", color = "black") +
+    xlab("Size (mm)") +
+    ylab("Count") +
+    scale_x_continuous(limits = common_limits) +
+    ggtitle(title) +
+    clean_theme
+}
+
+# Generate the four histograms in greyscale
+p_winter  <- make_hist(winter_data,  "Winter")
+p_spring  <- make_hist(spring_data,  "Spring")
+p_summer  <- make_hist(summer_data,  "Summer")
+p_autumn  <- make_hist(autumn_data,  "Autumn")
+
+# Combine and display
+grid.arrange(p_winter, p_spring, p_summer, p_autumn, ncol = 2)
 ```
 
-They both look the same to me, but anyway.
+I have no idea why this isn't working, I'll try it again later.
 
 ## 7. Kolmogorov-Smirnov Test
 
